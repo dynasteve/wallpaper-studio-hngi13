@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// NOTE: Navbar is imported but not used in the widget, ResponsiveScaffold handles nav
 import 'package:hngi13_stage3_wallpaperstudio/db/database_helper.dart';
 import 'package:hngi13_stage3_wallpaperstudio/models/wallpaper_model.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/wallpaper_button.dart';
@@ -25,6 +24,8 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
 
   // Define breakpoint for switching to vertical layout
   static const double splitViewBreakpoint = 800.0;
+  // Define aspect ratio for the List View item (e.g., a wide rectangle)
+  static const double listViewAspectRatio = 3.5; // Example: 3.5 units wide for every 1 unit high
 
   @override
   void initState() {
@@ -55,15 +56,9 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   // --- Favorite Toggle Logic ---
 
   void _toggleFavoriteStatus(Wallpaper wallpaper) async {
-    // 1. Get the current favorite status (handled internally by WallpaperButton's state)
-    // 2. Call the DB toggle (handled internally by WallpaperButton's state)
-
-    // 3. ✅ Refresh the current list to update the Wallpaper object in the list
-    // This is crucial if we display the favorite status here or if the list is used elsewhere.
     await _loadWallpapers(); 
 
-    // 4. Update the selectedWallpaper to reflect the new favorite status
-    // Find the wallpaper in the newly loaded list and set it as selected
+    // Update the selectedWallpaper to reflect the new favorite status
     final newSelected = wallpapers.firstWhere(
       (w) => w.id == wallpaper.id,
       orElse: () => wallpaper, // Fallback if somehow not found
@@ -77,17 +72,20 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   // --- Building the Wallpaper Grid/List ---
 
   Widget _buildWallpaperList(double screenWidth) {
-    // Grid settings
-    final crossAxisCount = screenWidth >= 1000 ? 3 : screenWidth >= 650 ? 2 : 1;
-    final childAspectRatio = crossAxisCount == 1 ? 16 / 9 : 9 / 14;
-
+    
     if (wallpapers.isEmpty) {
       return const Center(child: Text("No wallpapers found"));
     }
+    
+    final bool useGridView = isGridView && screenWidth >= splitViewBreakpoint;
 
-    // Grid View
-    if (isGridView && crossAxisCount > 1) {
+    // Grid View Logic
+    if (useGridView) {
+      final crossAxisCount = screenWidth >= 1000 ? 3 : 2;
+      const childAspectRatio = 9 / 14; 
+
       return GridView.builder(
+        padding: const EdgeInsets.only(top: 16), // Add a little padding to the top of the grid
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
@@ -101,7 +99,6 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
             wallpaper: wallpaper,
             showFavourite: true,
             onTap: () => _selectWallpaper(wallpaper),
-            // ✅ PASS THE FAVORITE TOGGLE HANDLER
             onFavoriteToggle: () => _toggleFavoriteStatus(wallpaper),
           );
         },
@@ -109,18 +106,23 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
     }
     
     // List View (or single column on small screens)
+    // On small screens, this effectively acts as a single-column grid, but
+    // we use a distinct List View appearance for the split view when !isGridView.
     return ListView.builder(
+      padding: const EdgeInsets.only(top: 16), // Add a little padding to the top of the list
       itemCount: wallpapers.length,
       itemBuilder: (context, index) {
         final wallpaper = wallpapers[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: WallpaperButton(
-            wallpaper: wallpaper,
-            showFavourite: true,
-            onTap: () => _selectWallpaper(wallpaper),
-            // ✅ PASS THE FAVORITE TOGGLE HANDLER
-            onFavoriteToggle: () => _toggleFavoriteStatus(wallpaper),
+          child: AspectRatio( // <--- Use AspectRatio for list item shape
+            aspectRatio: listViewAspectRatio, 
+            child: WallpaperButton(
+              wallpaper: wallpaper,
+              showFavourite: true,
+              onTap: () => _selectWallpaper(wallpaper),
+              onFavoriteToggle: () => _toggleFavoriteStatus(wallpaper),
+            ),
           ),
         );
       },
@@ -149,10 +151,11 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
               const Text("Back to Categories"),
             ],
           ),
-          const SizedBox(height: 13),
+          const SizedBox(height: 1),
           
           // Category Title and View Toggle
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -186,7 +189,6 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                 ),
             ],
           ),
-          const SizedBox(height: 20),
           
           // Wallpaper List/Grid Area
           Expanded(
@@ -200,7 +202,7 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
     if (isSplitView) {
       return ResponsiveScaffold(
         title: "Wallpaper Studio",
-        onHomePage: false, // Update these flags as needed
+        onHomePage: false, 
         onBrowsePage: false,
         onFavPage: false,
         onSettingsPage: false,
@@ -232,7 +234,11 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                             style: TextStyle(fontSize: 16, color: Colors.black54),
                           ),
                         )
-                      : WallpaperPreviewPane(wallpaper: selectedWallpaper!),
+                      : WallpaperPreviewPane(
+                          wallpaper: selectedWallpaper!,
+                          // NOTE: You'll need to pass set wallpaper/toggle fav callbacks 
+                          // to WallpaperPreviewPane if those buttons are in there.
+                        ), 
                 ),
               ),
             ),

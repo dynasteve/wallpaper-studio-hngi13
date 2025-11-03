@@ -36,7 +36,7 @@ class WallpaperPreviewPane extends StatelessWidget {
     final IconData favIcon = isFavourite ? Icons.favorite : Icons.favorite_border;
     
     // Use the primary color (0xffFBB03B) for the filled state
-    final Color favColor = isFavourite ? const Color(0xffFBB03B) : Colors.grey.shade200; 
+    final Color favColor = isFavourite ? Colors.transparent : Colors.grey.shade200; 
     
     // Text is white when filled, black when outlined
     final Color favTextColor = isFavourite ? Colors.white : Colors.black;
@@ -274,7 +274,7 @@ class WallpaperPreviewPane extends StatelessWidget {
             color: borderColor ?? Colors.grey.shade400,
             width: 1.5,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
@@ -296,7 +296,7 @@ class WallpaperPreviewPane extends StatelessWidget {
           foregroundColor: MaterialStateProperty.all<Color>(resolvedTextColor),
           elevation: MaterialStateProperty.all<double>(2),
           padding: MaterialStateProperty.all<EdgeInsets>(
-            const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
           ),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(

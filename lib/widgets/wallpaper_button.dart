@@ -107,7 +107,9 @@ class _WallpaperButtonState extends State<WallpaperButton> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.25),
+                          color: isFavourite ?
+                            Colors.white
+                          : Colors.white.withOpacity(0.25),
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: Colors.white.withOpacity(0.35),
@@ -117,7 +119,7 @@ class _WallpaperButtonState extends State<WallpaperButton> {
                         child: Icon(
                           isFavourite ? Icons.favorite : Icons.favorite_border,
                           color: isFavourite
-                              ? Colors.redAccent
+                              ? Color(0xffFBB03B)
                               : Colors.white.withOpacity(0.85),
                           size: 22,
                         ),
