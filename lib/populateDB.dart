@@ -71,5 +71,5 @@ Future<void> populateDB() async {
     );
   }
 
-  print("✅ Database populated with sample wallpapers!");
+  print("Database populated with sample wallpapers!");
 }
