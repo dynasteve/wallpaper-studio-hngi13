@@ -65,6 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   right: 18,
                                   bottom: 5,
                                   child: Column(
+                                    spacing: 11,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
