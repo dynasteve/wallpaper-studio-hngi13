@@ -57,6 +57,8 @@ class MyApp extends StatelessWidget {
 
         // General Browse/Search Screen (The "See All" page)
         '/browse': (context) => const BrowseScreen(),
+
+        "/browse/wallpaper_setup": (context) => const WallpaperSetup(category: "Nature"),
       },
       
       // Use onGenerateRoute for dynamic routes that require arguments (like category)
