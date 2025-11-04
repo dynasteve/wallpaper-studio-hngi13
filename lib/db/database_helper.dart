@@ -17,7 +17,6 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB(String filePath) async {
-    // ✅ Initialize FFI if on desktop (Windows, macOS, Linux)
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
@@ -29,41 +28,41 @@ class DatabaseHelper {
     return await databaseFactory.openDatabase(
       path,
       options: OpenDatabaseOptions(
-        version: 2, // bumped version for new fields
+        version: 3, // ✅ bump version to include isActive
         onCreate: _createDB,
         onUpgrade: _upgradeDB,
       ),
     );
   }
 
-Future _createDB(Database db, int version) async {
-  await db.execute('''
-    CREATE TABLE wallpapers (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      imageName TEXT NOT NULL,
-      imagePath TEXT NOT NULL,
-      category TEXT NOT NULL,
-      isFavourite INTEGER NOT NULL,
-      isActive INTEGER NOT NULL,
-      description TEXT,
-      tags TEXT,
-      previewPath TEXT
-    )
-  ''');
-}
+  Future _createDB(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE wallpapers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        imageName TEXT NOT NULL,
+        imagePath TEXT NOT NULL,
+        category TEXT NOT NULL,
+        isFavourite INTEGER NOT NULL,
+        isActive INTEGER NOT NULL,
+        description TEXT,
+        tags TEXT,
+        previewPath TEXT
+      )
+    ''');
+  }
 
-
-
-  // Handle DB upgrades (adds new columns if missing)
   Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE wallpapers ADD COLUMN tags TEXT;');
       await db.execute('ALTER TABLE wallpapers ADD COLUMN description TEXT;');
       await db.execute('ALTER TABLE wallpapers ADD COLUMN previewPath TEXT;');
     }
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE wallpapers ADD COLUMN isActive INTEGER DEFAULT 0;');
+    }
   }
 
-  // ---------------- CRUD FUNCTIONS ----------------
+  // ---------------- CRUD ----------------
 
   Future<int> insertWallpaper(Wallpaper wallpaper) async {
     final db = await instance.database;
@@ -78,18 +77,15 @@ Future _createDB(Database db, int version) async {
 
   Future<List<Wallpaper>> getWallpapersByCategory(String category) async {
     final db = await instance.database;
-    final result =
-        await db.query('wallpapers', where: 'category = ?', whereArgs: [category]);
+    final result = await db.query('wallpapers',
+        where: 'category = ?', whereArgs: [category]);
     return result.map((map) => Wallpaper.fromMap(map)).toList();
   }
 
   Future<List<Wallpaper>> getFavourites() async {
     final db = await instance.database;
-    final result = await db.query(
-      'wallpapers',
-      where: 'isFavourite = ?',
-      whereArgs: [1],
-    );
+    final result =
+        await db.query('wallpapers', where: 'isFavourite = ?', whereArgs: [1]);
     return result.map((map) => Wallpaper.fromMap(map)).toList();
   }
 
@@ -103,12 +99,14 @@ Future _createDB(Database db, int version) async {
     );
   }
 
+  /// ✅ Set this wallpaper as active
   Future<void> setActiveWallpaper(int id) async {
     final db = await instance.database;
     await db.update('wallpapers', {'isActive': 0});
     await db.update('wallpapers', {'isActive': 1}, where: 'id = ?', whereArgs: [id]);
   }
 
+  /// ✅ Fetch the currently active wallpaper
   Future<Wallpaper?> getActiveWallpaper() async {
     final db = await instance.database;
     final result =

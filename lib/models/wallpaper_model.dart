@@ -64,9 +64,6 @@ class Wallpaper {
     };
   }
 
-
-
-    /// Returns number of wallpapers in [categoryName]
   static Future<int> getCountByCategory(Database db, String categoryName) async {
     final result = await db.rawQuery(
       'SELECT COUNT(*) as count FROM wallpapers WHERE category = ?',
@@ -75,4 +72,3 @@ class Wallpaper {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 }
-
