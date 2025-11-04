@@ -4,6 +4,7 @@ import 'package:hngi13_stage3_wallpaperstudio/models/wallpaper_model.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/wallpaper_button.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/wallpaper_preview_pane.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/responsive_scaffold.dart';
+import 'package:hngi13_stage3_wallpaperstudio/widgets/wallpaper_setup_sidepanel.dart';
 
 class WallpaperSetup extends StatefulWidget {
   final String category;
@@ -272,11 +273,11 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
               duration: const Duration(milliseconds: 300),
               right: showSetWallpaperPanel
                   ? 0
-                  : -MediaQuery.of(context).size.width * 0.35,
+                  : -MediaQuery.of(context).size.width * 0.45,
               top: 0,
               bottom: 0,
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.35,
+                width: MediaQuery.of(context).size.width * 0.45,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -293,23 +294,9 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                 ),
                 child: Column(
                   children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () =>
-                            setState(() => showSetWallpaperPanel = false),
-                      ),
-                    ),
                     const Expanded(
                       child: Center(
-                        child: Text(
-                          "Set Wallpaper Drawer (empty)",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        child: WallpaperSetupSidePanel(),
                       ),
                     ),
                   ],
@@ -325,7 +312,7 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
     return ResponsiveScaffold(
       title: "Wallpaper Studio",
       onHomePage: false,
-      onBrowsePage: false,
+      onBrowsePage: true,
       onFavPage: false,
       onSettingsPage: false,
       // Wrap content in a SingleChildScrollView for small screens
