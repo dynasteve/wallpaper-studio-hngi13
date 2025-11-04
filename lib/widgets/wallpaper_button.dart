@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../db/database_helper.dart';
@@ -8,15 +9,14 @@ class WallpaperButton extends StatefulWidget {
   final Wallpaper wallpaper;
   final bool showFavourite;
   final VoidCallback? onTap;
-  // ✅ NEW PARAMETER: Callback to notify the parent when the favorite status changes
-  final VoidCallback? onFavoriteToggle; 
+  final VoidCallback? onFavoriteToggle;
 
   const WallpaperButton({
     super.key,
     required this.wallpaper,
     this.showFavourite = true,
     this.onTap,
-    this.onFavoriteToggle, // ✅ ADDED TO CONSTRUCTOR
+    this.onFavoriteToggle,
   });
 
   @override
@@ -26,35 +26,44 @@ class WallpaperButton extends StatefulWidget {
 class _WallpaperButtonState extends State<WallpaperButton> {
   late bool isFavourite;
 
-  // Use a unique key to differentiate between wallpapers if the widget itself is reused
-  // This helps ensure initState is called correctly when the underlying data changes
-  @override
-  void didUpdateWidget(covariant WallpaperButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Important: Update internal state if the wallpaper object itself changes
-    if (oldWidget.wallpaper.isFavourite != widget.wallpaper.isFavourite) {
-      isFavourite = widget.wallpaper.isFavourite;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     isFavourite = widget.wallpaper.isFavourite;
   }
 
+  @override
+  void didUpdateWidget(covariant WallpaperButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.wallpaper.isFavourite != widget.wallpaper.isFavourite) {
+      isFavourite = widget.wallpaper.isFavourite;
+    }
+  }
+
   Future<void> _toggleFavourite() async {
-    // 1. Update the database
     await DatabaseHelper.instance.toggleFavourite(widget.wallpaper.id!, isFavourite);
-    
-    // 2. Update the internal state for the icon change
     setState(() {
       isFavourite = !isFavourite;
     });
-
-    // 3. ✅ Notify the parent (like FavouritesScreen) to refresh its list
     if (widget.onFavoriteToggle != null) {
       widget.onFavoriteToggle!();
+    }
+  }
+
+  /// ✅ Determines whether to use FileImage or AssetImage dynamically
+  ImageProvider _getImageProvider(String path) {
+    try {
+      if (path.startsWith('/') || path.contains('storage')) {
+        final file = File(path);
+        if (file.existsSync()) {
+          return FileImage(file);
+        }
+      }
+      // Default to asset if not a valid file
+      return AssetImage(path);
+    } catch (e) {
+      // fallback placeholder
+      return const AssetImage('assets/images/placeholder.jpg');
     }
   }
 
@@ -66,18 +75,21 @@ class _WallpaperButtonState extends State<WallpaperButton> {
         borderRadius: BorderRadius.circular(24),
         child: Stack(
           children: [
-            // Wallpaper image (unchanged)
+            // ✅ Wallpaper image (works for both asset and file)
             Container(
+              width: 220,
+              height: 320,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
+                color: Colors.grey[300],
                 image: DecorationImage(
-                  image: AssetImage(widget.wallpaper.imagePath),
+                  image: _getImageProvider(widget.wallpaper.imagePath),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
 
-            // Gradient overlay (unchanged)
+            // Gradient overlay
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
@@ -92,7 +104,7 @@ class _WallpaperButtonState extends State<WallpaperButton> {
               ),
             ),
 
-            // ❤️ Favourite button (glass circle)
+            // ❤️ Favourite button
             if (widget.showFavourite)
               Positioned(
                 top: 8,
@@ -101,15 +113,14 @@ class _WallpaperButtonState extends State<WallpaperButton> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: InkWell(
-                      // ✅ CALL THE INTERNAL TOGGLE METHOD
-                      onTap: _toggleFavourite, 
+                      onTap: _toggleFavourite,
                       borderRadius: BorderRadius.circular(50),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: isFavourite ?
-                            Colors.white
-                          : Colors.white.withOpacity(0.25),
+                          color: isFavourite
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.25),
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: Colors.white.withOpacity(0.35),
@@ -117,9 +128,11 @@ class _WallpaperButtonState extends State<WallpaperButton> {
                           ),
                         ),
                         child: Icon(
-                          isFavourite ? Icons.favorite : Icons.favorite_border,
+                          isFavourite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
                           color: isFavourite
-                              ? Color(0xffFBB03B)
+                              ? const Color(0xffFBB03B)
                               : Colors.white.withOpacity(0.85),
                           size: 22,
                         ),
@@ -129,7 +142,7 @@ class _WallpaperButtonState extends State<WallpaperButton> {
                 ),
               ),
 
-            // Name + category glass tag (unchanged)
+            // Name + category glass tag
             Positioned(
               bottom: 10,
               left: 10,
@@ -149,7 +162,6 @@ class _WallpaperButtonState extends State<WallpaperButton> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  // Assuming TranspRoundButton is a defined widget
                   TranspRoundButton(title: widget.wallpaper.category),
                 ],
               ),

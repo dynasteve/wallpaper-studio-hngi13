@@ -294,9 +294,13 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                 ),
                 child: Column(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Center(
-                        child: WallpaperSetupSidePanel(),
+                        child: selectedWallpaper == null
+        ? const Text("No wallpaper selected")
+        : WallpaperSetupSidePanel(
+            selectedWallpaper: selectedWallpaper!,
+          ),
                       ),
                     ),
                   ],

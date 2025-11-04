@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:hngi13_stage3_wallpaperstudio/main.dart';
+import 'package:hngi13_stage3_wallpaperstudio/models/wallpaper_model.dart';
 
 class WallpaperSetupSidePanel extends StatefulWidget {
-  const WallpaperSetupSidePanel({super.key});
+  final Wallpaper selectedWallpaper;
+  const WallpaperSetupSidePanel({
+    super.key,
+    required this.selectedWallpaper,
+  });
 
   @override
   State<WallpaperSetupSidePanel> createState() =>
       _WallpaperSetupSidePanelState();
 }
+
 
 class _WallpaperSetupSidePanelState extends State<WallpaperSetupSidePanel> {
   bool isActivated = false;
@@ -17,6 +24,13 @@ class _WallpaperSetupSidePanelState extends State<WallpaperSetupSidePanel> {
 
   static const _panelRadius = 20.0;
   static const _accent = Color(0xFFFBB03B);
+
+  void activateWallpaper(Wallpaper wallpaper) {
+  setState(() {
+    isActivated;
+    activeWallpaper = wallpaper; // ✅ store globally
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +193,7 @@ class _WallpaperSetupSidePanelState extends State<WallpaperSetupSidePanel> {
                       label: "Save settings",
                       backgroundColor: _accent,
                       textColor: Colors.white,
-                      onPressed: () => Navigator.of(context).maybePop(),
+                      onPressed: () => {},
                     ),
                   ],
                 ),
@@ -278,7 +292,12 @@ class _WallpaperSetupSidePanelState extends State<WallpaperSetupSidePanel> {
 
   Widget _activatePill() {
     return GestureDetector(
-      onTap: () => setState(() => isActivated = !isActivated),
+      onTap: () => setState(() {
+        isActivated = !isActivated;
+        activateWallpaper(widget.selectedWallpaper);
+        print("new wallpaper activated" + widget.selectedWallpaper.imageName);
+        }
+      ),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),

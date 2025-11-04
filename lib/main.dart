@@ -6,12 +6,14 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:hngi13_stage3_wallpaperstudio/screens/home_screen.dart';
 import 'package:hngi13_stage3_wallpaperstudio/screens/favourite_screen.dart';
 import 'package:hngi13_stage3_wallpaperstudio/screens/browse_screen.dart';
-import 'package:hngi13_stage3_wallpaperstudio/screens/wallpaper_setup.dart'; 
+import 'package:hngi13_stage3_wallpaperstudio/screens/wallpaper_setup.dart';
+import 'package:hngi13_stage3_wallpaperstudio/models/wallpaper_model.dart'; 
 // Note: wallpaper_list.dart and unused model/helper imports removed for cleanliness
 
 // --- Import Utilities ---
 import 'populateDB.dart'; 
 
+Wallpaper? activeWallpaper;
 // 1. Initial setup and DB population runs before the app starts
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

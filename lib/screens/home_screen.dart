@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hngi13_stage3_wallpaperstudio/main.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/title_desc.dart';
+import 'package:hngi13_stage3_wallpaperstudio/widgets/wallpaper_desc.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/category_card.dart';
 import 'package:hngi13_stage3_wallpaperstudio/db/database_helper.dart';
 import 'package:hngi13_stage3_wallpaperstudio/models/wallpaper_model.dart';
@@ -24,6 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _fetchCountsFuture = _loadCategoryCounts();
   }
+
+  @override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  setState(() {}); // Rebuild when dependencies change (will show active wallpaper)
+}
 
   Future<void> _loadCategoryCounts() async {
     final db = await DatabaseHelper.instance.database;
@@ -91,11 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TitleDesc(
-                    title: "Discover Beautiful Wallpapers",
-                    description:
-                        "Discover curated collections of stunning wallpapers. Browse by category, preview in full-screen, and set your favorites.",
-                  ),
+                  activeWallpaper == null
+    ? const TitleDesc(
+        title: "Discover Beautiful Wallpapers",
+        description:
+            "Discover curated collections of stunning wallpapers. Browse by category, preview in full-screen, and set your favorites.",
+      )
+    :WallpaperDesc(selectedWallpaper: activeWallpaper!,),
                   const SizedBox(height: 50),
 
                   Row(
