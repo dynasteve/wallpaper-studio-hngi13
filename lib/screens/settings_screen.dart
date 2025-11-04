@@ -15,10 +15,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return ResponsiveScaffold(
       title: "Wallpaper Studio",
-      onHomePage: true,
+      onHomePage: false,
       onBrowsePage: false,
       onFavPage: false,
-      onSettingsPage: false,
+      onSettingsPage: true,
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(47, 53, 47, 118.3),
         child: Column(
