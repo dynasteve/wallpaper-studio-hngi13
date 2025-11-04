@@ -8,10 +8,7 @@ import 'package:hngi13_stage3_wallpaperstudio/widgets/responsive_scaffold.dart';
 class WallpaperSetup extends StatefulWidget {
   final String category;
 
-  const WallpaperSetup({
-    super.key,
-    required this.category,
-  });
+  const WallpaperSetup({super.key, required this.category});
 
   @override
   State<WallpaperSetup> createState() => _WallpaperSetupState();
@@ -21,11 +18,14 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   List<Wallpaper> wallpapers = [];
   Wallpaper? selectedWallpaper;
   bool isGridView = true;
+  bool showSetWallpaperPanel = false;
 
   // Define breakpoint for switching to vertical layout
   static const double splitViewBreakpoint = 800.0;
   // Define aspect ratio for the List View item (e.g., a wide rectangle)
-  static const double listViewAspectRatio = 3.5; // Example: 3.5 units wide for every 1 unit high
+  static const double listViewAspectRatio =
+      3.5; // Example: 3.5 units wide for every 1 unit high
+
 
   @override
   void initState() {
@@ -36,8 +36,9 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   // --- Data Loading and Selection ---
 
   Future<void> _loadWallpapers() async {
-    final dbWallpapers =
-        await DatabaseHelper.instance.getWallpapersByCategory(widget.category);
+    final dbWallpapers = await DatabaseHelper.instance.getWallpapersByCategory(
+      widget.category,
+    );
     setState(() {
       wallpapers = dbWallpapers;
       // Set the first item as selected if the list isn't empty
@@ -56,7 +57,7 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   // --- Favorite Toggle Logic ---
 
   void _toggleFavoriteStatus(Wallpaper wallpaper) async {
-    await _loadWallpapers(); 
+    await _loadWallpapers();
 
     // Update the selectedWallpaper to reflect the new favorite status
     final newSelected = wallpapers.firstWhere(
@@ -72,20 +73,21 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   // --- Building the Wallpaper Grid/List ---
 
   Widget _buildWallpaperList(double screenWidth) {
-    
     if (wallpapers.isEmpty) {
       return const Center(child: Text("No wallpapers found"));
     }
-    
+
     final bool useGridView = isGridView && screenWidth >= splitViewBreakpoint;
 
     // Grid View Logic
     if (useGridView) {
       final crossAxisCount = screenWidth >= 1000 ? 3 : 2;
-      const childAspectRatio = 9 / 14; 
+      const childAspectRatio = 9 / 14;
 
       return GridView.builder(
-        padding: const EdgeInsets.only(top: 16), // Add a little padding to the top of the grid
+        padding: const EdgeInsets.only(
+          top: 16,
+        ), // Add a little padding to the top of the grid
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
@@ -104,19 +106,22 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
         },
       );
     }
-    
+
     // List View (or single column on small screens)
     // On small screens, this effectively acts as a single-column grid, but
     // we use a distinct List View appearance for the split view when !isGridView.
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 16), // Add a little padding to the top of the list
+      padding: const EdgeInsets.only(
+        top: 16,
+      ), // Add a little padding to the top of the list
       itemCount: wallpapers.length,
       itemBuilder: (context, index) {
         final wallpaper = wallpapers[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: AspectRatio( // <--- Use AspectRatio for list item shape
-            aspectRatio: listViewAspectRatio, 
+          child: AspectRatio(
+            // <--- Use AspectRatio for list item shape
+            aspectRatio: listViewAspectRatio,
             child: WallpaperButton(
               wallpaper: wallpaper,
               showFavourite: true,
@@ -152,7 +157,7 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
             ],
           ),
           const SizedBox(height: 1),
-          
+
           // Category Title and View Toggle
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -173,7 +178,9 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                       onPressed: () => setState(() => isGridView = true),
                       icon: Icon(
                         Icons.grid_view_outlined,
-                        color: isGridView ? const Color.fromARGB(255, 255, 168, 33) : Colors.grey.shade300,
+                        color: isGridView
+                            ? const Color.fromARGB(255, 255, 168, 33)
+                            : Colors.grey.shade300,
                         size: 30,
                       ),
                     ),
@@ -181,7 +188,9 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                       onPressed: () => setState(() => isGridView = false),
                       icon: Icon(
                         Icons.view_agenda_outlined,
-                        color: !isGridView ? const Color.fromARGB(255, 255, 168, 33) : Colors.grey.shade300,
+                        color: !isGridView
+                            ? const Color.fromARGB(255, 255, 168, 33)
+                            : Colors.grey.shade300,
                         size: 30,
                       ),
                     ),
@@ -189,11 +198,9 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                 ),
             ],
           ),
-          
+
           // Wallpaper List/Grid Area
-          Expanded(
-            child: _buildWallpaperList(screenWidth),
-          ),
+          Expanded(child: _buildWallpaperList(screenWidth)),
         ],
       ),
     );
@@ -202,43 +209,110 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
     if (isSplitView) {
       return ResponsiveScaffold(
         title: "Wallpaper Studio",
-        onHomePage: false, 
+        onHomePage: false,
         onBrowsePage: false,
         onFavPage: false,
         onSettingsPage: false,
-        body: Row(
+        body: Stack(
           children: [
-            // LEFT SIDE - Wallpaper Grid/List
-            Expanded(
-              flex: 3,
-              child: content,
-            ),
-            // RIGHT SIDE - Gradient + Preview
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 40, 47, 16.57),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Colors.white, Color(0xFFF5F5F5)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+            // --- Main content row ---
+            Row(
+              children: [
+                Expanded(flex: 3, child: content),
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 40, 47, 16.57),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Colors.white, Color(0xFFF5F5F5)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                      child: selectedWallpaper == null
+                          ? const Center(
+                              child: Text(
+                                "Select a wallpaper to preview",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            )
+                          : WallpaperPreviewPane(
+                              wallpaper: selectedWallpaper!,
+                              onSetWallpaper: () {
+                                setState(() => showSetWallpaperPanel = true);
+                              },
+                              onToggleFavourite: () =>
+                                  _toggleFavoriteStatus(selectedWallpaper!),
+                            ),
                     ),
-                    borderRadius: BorderRadius.circular(32),
                   ),
-                  child: selectedWallpaper == null
-                      ? const Center(
-                          child: Text(
-                            "Select a wallpaper to preview",
-                            style: TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+              ],
+            ),
+
+            // --- Dim background when panel is open ---
+            if (showSetWallpaperPanel)
+              AnimatedOpacity(
+                opacity: 0.4,
+                duration: const Duration(milliseconds: 250),
+                child: GestureDetector(
+                  onTap: () => setState(() => showSetWallpaperPanel = false),
+                  child: Container(color: Colors.black),
+                ),
+              ),
+
+            // --- Right-side drawer panel ---
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              right: showSetWallpaperPanel
+                  ? 0
+                  : -MediaQuery.of(context).size.width * 0.35,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.35,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(0),
+                    bottomLeft: Radius.circular(0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: Offset(-3, 0),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () =>
+                            setState(() => showSetWallpaperPanel = false),
+                      ),
+                    ),
+                    const Expanded(
+                      child: Center(
+                        child: Text(
+                          "Set Wallpaper Drawer (empty)",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
                           ),
-                        )
-                      : WallpaperPreviewPane(
-                          wallpaper: selectedWallpaper!,
-                          // NOTE: You'll need to pass set wallpaper/toggle fav callbacks 
-                          // to WallpaperPreviewPane if those buttons are in there.
-                        ), 
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

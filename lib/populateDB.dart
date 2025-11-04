@@ -34,7 +34,7 @@ Future<void> populateDB() async {
 
   // 🌿 Nature Wallpapers
   const natureDesc =
-      "Immerse yourself in the calming essence of nature with lush forests, serene lakes, and mountain peaks.";
+      "Discover the pure beauty of \"Natural Essence\" – your gateway to authentic, nature-inspired experiences. Let this unique collection elevate your senses and connect you with the unrefined elegance of the natural world. Embrace \"Natural Essence\" for a truly organic transformation in your daily life.";
   for (int i = 1; i <= 6; i++) {
     await addWallpaper(
       imagePath: 'assets/wallpapers/nature/nature-$i.jpg',

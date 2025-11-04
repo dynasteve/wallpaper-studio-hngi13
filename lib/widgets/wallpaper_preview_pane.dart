@@ -274,7 +274,7 @@ class WallpaperPreviewPane extends StatelessWidget {
             color: borderColor ?? Colors.grey.shade400,
             width: 1.5,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
@@ -283,7 +283,7 @@ class WallpaperPreviewPane extends StatelessWidget {
         label: Text(
           label,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 10,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -296,7 +296,7 @@ class WallpaperPreviewPane extends StatelessWidget {
           foregroundColor: MaterialStateProperty.all<Color>(resolvedTextColor),
           elevation: MaterialStateProperty.all<double>(2),
           padding: MaterialStateProperty.all<EdgeInsets>(
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           ),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
@@ -308,7 +308,7 @@ class WallpaperPreviewPane extends StatelessWidget {
         label: Text(
           label,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 10,
             fontWeight: FontWeight.w600,
           ),
         ),
