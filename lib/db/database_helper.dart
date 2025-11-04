@@ -17,18 +17,21 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB(String filePath) async {
+    // Initialize FFI for desktop platforms
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
     }
 
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, filePath);
+    // ✅ Use the app’s internal support directory instead of Documents
+    final appDirectory = await getApplicationSupportDirectory();
+    final path = join(appDirectory.path, filePath);
 
+    // Open or create database
     return await databaseFactory.openDatabase(
       path,
       options: OpenDatabaseOptions(
-        version: 3, // ✅ bump version to include isActive
+        version: 3, // ✅ keep your same version
         onCreate: _createDB,
         onUpgrade: _upgradeDB,
       ),
@@ -58,7 +61,8 @@ class DatabaseHelper {
       await db.execute('ALTER TABLE wallpapers ADD COLUMN previewPath TEXT;');
     }
     if (oldVersion < 3) {
-      await db.execute('ALTER TABLE wallpapers ADD COLUMN isActive INTEGER DEFAULT 0;');
+      await db.execute(
+          'ALTER TABLE wallpapers ADD COLUMN isActive INTEGER DEFAULT 0;');
     }
   }
 
@@ -77,8 +81,11 @@ class DatabaseHelper {
 
   Future<List<Wallpaper>> getWallpapersByCategory(String category) async {
     final db = await instance.database;
-    final result = await db.query('wallpapers',
-        where: 'category = ?', whereArgs: [category]);
+    final result = await db.query(
+      'wallpapers',
+      where: 'category = ?',
+      whereArgs: [category],
+    );
     return result.map((map) => Wallpaper.fromMap(map)).toList();
   }
 
@@ -103,7 +110,12 @@ class DatabaseHelper {
   Future<void> setActiveWallpaper(int id) async {
     final db = await instance.database;
     await db.update('wallpapers', {'isActive': 0});
-    await db.update('wallpapers', {'isActive': 1}, where: 'id = ?', whereArgs: [id]);
+    await db.update(
+      'wallpapers',
+      {'isActive': 1},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
   /// ✅ Fetch the currently active wallpaper
