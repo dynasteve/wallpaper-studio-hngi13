@@ -90,10 +90,10 @@ class NavBar extends StatelessWidget {
           onPage: onSettingsPage,
           // NOTE: Assuming you will create a '/settings' route later
           onPressed: () { 
-            // Replace with actual settings route when created
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Settings navigation not yet implemented.')),
-            );
+              Navigator.pushNamed(context, '/settings');
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(content: Text('Settings navigation not yet implemented.')),
+            // );
           },
         ),
       ],

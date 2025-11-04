@@ -27,7 +27,6 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
   static const double listViewAspectRatio =
       3.5; // Example: 3.5 units wide for every 1 unit high
 
-
   @override
   void initState() {
     super.initState();
@@ -297,10 +296,10 @@ class _WallpaperSetupState extends State<WallpaperSetup> {
                     Expanded(
                       child: Center(
                         child: selectedWallpaper == null
-        ? const Text("No wallpaper selected")
-        : WallpaperSetupSidePanel(
-            selectedWallpaper: selectedWallpaper!,
-          ),
+                            ? const Text("No wallpaper selected")
+                            : WallpaperSetupSidePanel(
+                                selectedWallpaper: selectedWallpaper!,
+                              ),
                       ),
                     ),
                   ],

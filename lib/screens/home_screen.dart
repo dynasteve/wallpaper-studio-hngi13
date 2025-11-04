@@ -28,23 +28,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  setState(() {}); // Rebuild when dependencies change (will show active wallpaper)
-}
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    setState(
+      () {},
+    ); // Rebuild when dependencies change (will show active wallpaper)
+  }
 
   Future<void> _loadCategoryCounts() async {
     final db = await DatabaseHelper.instance.database;
 
-    final List<Map<String, dynamic>> result =
-        await db.rawQuery('SELECT DISTINCT category FROM wallpapers');
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      'SELECT DISTINCT category FROM wallpapers',
+    );
 
     final Map<String, int> counts = {};
-    await Future.wait(result.map((row) async {
-      final category = row['category'] as String;
-      final count = await Wallpaper.getCountByCategory(db, category);
-      counts[category] = count;
-    }));
+    await Future.wait(
+      result.map((row) async {
+        final category = row['category'] as String;
+        final count = await Wallpaper.getCountByCategory(db, category);
+        counts[category] = count;
+      }),
+    );
 
     if (mounted) {
       setState(() {
@@ -71,12 +76,36 @@ void didChangeDependencies() {
     final cardWidth = (availableWidth - totalSpacing) / columns;
 
     final allCategories = [
-      {"image": "assets/images/nature_card.jpg", "label": "Nature", "desc": "Mountains, Forests and Landscapes"},
-      {"image": "assets/images/abstract_card.jpg", "label": "Abstract", "desc": "Modern Geometric and artistic designs"},
-      {"image": "assets/images/urban_card.jpg", "label": "Urban", "desc": "Cities, architecture and street"},
-      {"image": "assets/images/space_card.jpg", "label": "Space", "desc": "Cosmos, planets, and galaxies"},
-      {"image": "assets/images/minimalist_card.jpg", "label": "Minimalist", "desc": "Clean, simple, and elegant"},
-      {"image": "assets/images/animal_card.jpg", "label": "Animal", "desc": "Wildlife and nature photography"},
+      {
+        "image": "assets/images/nature_card.jpg",
+        "label": "Nature",
+        "desc": "Mountains, Forests and Landscapes",
+      },
+      {
+        "image": "assets/images/abstract_card.jpg",
+        "label": "Abstract",
+        "desc": "Modern Geometric and artistic designs",
+      },
+      {
+        "image": "assets/images/urban_card.jpg",
+        "label": "Urban",
+        "desc": "Cities, architecture and street",
+      },
+      {
+        "image": "assets/images/space_card.jpg",
+        "label": "Space",
+        "desc": "Cosmos, planets, and galaxies",
+      },
+      {
+        "image": "assets/images/minimalist_card.jpg",
+        "label": "Minimalist",
+        "desc": "Clean, simple, and elegant",
+      },
+      {
+        "image": "assets/images/animal_card.jpg",
+        "label": "Animal",
+        "desc": "Wildlife and nature photography",
+      },
     ];
 
     return ResponsiveScaffold(
@@ -95,17 +124,22 @@ void didChangeDependencies() {
           return SingleChildScrollView(
             child: Container(
               alignment: Alignment.center,
-              margin: const EdgeInsets.fromLTRB(horizontalMargin, 50.63, horizontalMargin, 45.94),
+              margin: const EdgeInsets.fromLTRB(
+                horizontalMargin,
+                50.63,
+                horizontalMargin,
+                45.94,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   activeWallpaper == null
-    ? const TitleDesc(
-        title: "Discover Beautiful Wallpapers",
-        description:
-            "Discover curated collections of stunning wallpapers. Browse by category, preview in full-screen, and set your favorites.",
-      )
-    :WallpaperDesc(selectedWallpaper: activeWallpaper!,),
+                      ? const TitleDesc(
+                          title: "Discover Beautiful Wallpapers",
+                          description:
+                              "Discover curated collections of stunning wallpapers. Browse by category, preview in full-screen, and set your favorites.",
+                        )
+                      : WallpaperDesc(selectedWallpaper: activeWallpaper!),
                   const SizedBox(height: 50),
 
                   Row(
@@ -153,9 +187,10 @@ void didChangeDependencies() {
                           onPressed: () {
                             // 🎯 NAVIGATION: Go to the WallpaperSetup screen for the specific category
                             Navigator.pushNamed(
-                              context, 
-                              '/category_setup', 
-                              arguments: categoryLabel // Pass the category name as an argument
+                              context,
+                              '/category_setup',
+                              arguments:
+                                  categoryLabel, // Pass the category name as an argument
                             );
                           },
                         ),

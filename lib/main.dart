@@ -8,6 +8,7 @@ import 'package:hngi13_stage3_wallpaperstudio/screens/favourite_screen.dart';
 import 'package:hngi13_stage3_wallpaperstudio/screens/browse_screen.dart';
 import 'package:hngi13_stage3_wallpaperstudio/screens/wallpaper_setup.dart';
 import 'package:hngi13_stage3_wallpaperstudio/models/wallpaper_model.dart'; 
+import 'package:hngi13_stage3_wallpaperstudio/screens/settings_screen.dart';
 // Note: wallpaper_list.dart and unused model/helper imports removed for cleanliness
 
 // --- Import Utilities ---
@@ -59,6 +60,8 @@ class MyApp extends StatelessWidget {
         '/browse': (context) => const BrowseScreen(),
 
         "/browse/wallpaper_setup": (context) => const WallpaperSetup(category: "Nature"),
+
+        '/settings': (context) => const SettingsScreen(),
       },
       
       // Use onGenerateRoute for dynamic routes that require arguments (like category)

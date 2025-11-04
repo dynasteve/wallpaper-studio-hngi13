@@ -21,7 +21,7 @@ class TitleDesc extends StatelessWidget {
           GradientText(
             title,
             TextStyle(
-              fontSize: 58,
+              fontSize: 60,
               fontFamily: 'ClashDisplay',
               fontWeight: FontWeight.w500,
             ),
@@ -36,7 +36,7 @@ class TitleDesc extends StatelessWidget {
               description,
               style: TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 22,
+                fontSize: 24,
                 fontFamily: 'Poppins',
                 color: Color(0xFF575757)
               ),

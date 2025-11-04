@@ -24,8 +24,8 @@ class WallpaperDesc extends StatelessWidget {
         children: [
           // ✅ Wallpaper Image with border
           Container(
-            width: 150,
-            height: 240,
+            width: 110,
+            height: 196,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: const Color(0xFFE0E0E0), width: 5),
@@ -42,13 +42,15 @@ class WallpaperDesc extends StatelessWidget {
           // ✅ Text and action buttons arranged vertically
           Expanded(
             child: Column(
+              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 8,
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 2,
               children: [
                 const GradientText(
                   "Your Active Wallpaper",
                   TextStyle(
-                    fontSize: 34,
+                    fontSize: 30,
                     fontFamily: 'ClashDisplay',
                     fontWeight: FontWeight.w500,
                   ),
@@ -62,18 +64,18 @@ class WallpaperDesc extends StatelessWidget {
                     "This wallpaper is currently set as your active background",
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 22,
+                      fontSize: 18,
                       fontFamily: 'Poppins',
                       color: Color(0xFF808080),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
 
                 Row(
                   children: [
                     const Text(
-                      "Category - ",
+                      "Category ",
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Poppins",
@@ -82,12 +84,11 @@ class WallpaperDesc extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      selectedWallpaper.category ?? "Unknown",
+                      "- ${selectedWallpaper.category}" ?? "Unknown",
                       style: const TextStyle(
                         fontSize: 14,
                         fontFamily: "Poppins",
                         fontWeight: FontWeight.w500,
-                        color: Color(0xff808080),
                       ),
                     ),
                   ],
@@ -95,7 +96,7 @@ class WallpaperDesc extends StatelessWidget {
                 Row(
                   children: [
                     const Text(
-                      "Selection - ",
+                      "Selection ",
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Poppins",
@@ -104,12 +105,11 @@ class WallpaperDesc extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      selectedWallpaper.imageName ?? "Untitled",
+                      "- ${selectedWallpaper.imageName}" ?? "Untitled",
                       style: const TextStyle(
                         fontSize: 14,
                         fontFamily: "Poppins",
                         fontWeight: FontWeight.w500,
-                        color: Color(0xff808080),
                       ),
                     ),
                   ],

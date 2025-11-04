@@ -138,7 +138,7 @@ class WallpaperPreviewPane extends StatelessWidget {
                           children: [
                             _actionIcon(Icons.ios_share_rounded),
                             const SizedBox(width: 15),
-                            _actionIcon(Icons.south_east_outlined),
+                            _actionIcon(Icons.close_fullscreen_rounded),
                             const SizedBox(width: 15),
                             _actionIcon(Icons.settings_outlined),
                           ],
@@ -249,7 +249,7 @@ class WallpaperPreviewPane extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Icon(icon, size: 20, color: Color(0xff808080),),
+      child: Icon(icon, size: 20, color: Color(0xff808080), textDirection: TextDirection.rtl,),
     ),
     );
   }
