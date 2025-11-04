@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/responsive_scaffold.dart';
 import 'package:hngi13_stage3_wallpaperstudio/widgets/title_desc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -43,19 +44,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Expanded(
                     flex: 569,
                     child: Container(
-                      padding: const EdgeInsets.only(
-                        // left: 151,
-                        bottom: 114,
-                        top: 114,
-                      ),
+                      padding: const EdgeInsets.only(bottom: 114, top: 114),
                       child: const SetUpContent(),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     flex: 623,
-                    child: Text(
-                      "Phone Area",
-                      style: TextStyle(color: Colors.black),
+                    child: Center(
+                      child: SizedBox.fromSize(
+                        size: Size.fromHeight(524),
+                        child: Center(
+                          child: AspectRatio(
+                            aspectRatio: 9 / 16,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Positioned(
+                                  top: 5,
+                                  left: 18,
+                                  right: 18,
+                                  bottom: 5,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 48,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xffE8F5E9,
+                                          ), // light green background
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ), // round button
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SvgPicture.asset("assets/vectors/link.svg"),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              "Connected to device",
+                                              style: TextStyle(
+                                                color: Color(
+                                                  0xff4CAF50,
+                                                ), // green text
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                              "Click to disconnect",
+                                              style: TextStyle(
+                                                color: Colors.black, // green text
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                                Image.asset(
+                                  'assets/iphone.png',
+                                  fit: BoxFit.contain,
+                                ), //
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -120,6 +182,7 @@ class _SetUpContentState extends State<SetUpContent> {
               border: Border.all(color: Colors.grey.shade300, width: 1),
               borderRadius: BorderRadius.circular(16),
             ),
+            // Left side
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,
