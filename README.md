@@ -74,5 +74,10 @@
 
 * All fonts used **Poppins** and **Clash Display** (make sure it’s declared in `pubspec.yaml`).
 * Desktop support requires `sqflite_common_ffi` initialization.
-* UI is completely responsive may crash with some layouts.
+* UI is not completely responsive may crash with some layouts.
 
+Video Display Link
+https://drive.google.com/file/d/1EW3j-qSpXxOrSOQ87YZngwu7NXt9q2vs/view?usp=drive_link
+
+Download Release .exe file
+https://drive.google.com/drive/folders/1PT5QOg4_jmwck9raNfhqwuoHbWl1b7B-?usp=drive_link
